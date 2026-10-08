@@ -1,3 +1,5 @@
+from collections import Counter
+
 # 🔍 Problem 1: Find Most Frequent Element
 # Given a list of integers, return the value that appears most frequently.
 # If there's a tie, return any of the most frequent.
@@ -10,28 +12,20 @@ def most_frequent(numbers):
     if not numbers:
         return None
 
-    counts = {}
-    for number in numbers:
-        counts[number] = counts.get(number, 0) + 1
-
-    best_value = None
-    best_count = -1
-    for value, count in counts.items():
-        if count > best_count:
-            best_value = value
-            best_count = count
-
-    return best_value
+    # Refactor note: I optimized this version by using Counter, which keeps the same
+    # hash-based counting strategy but reduces Python-level bookkeeping compared to
+    # repeatedly calling dict.get() in a manual loop.
+    counts = Counter(numbers)
+    return max(counts, key=counts.get)
 
 """
-Time and Space Analysis for problem 1:
-- Best-case: O(n) because we still need to examine every value in the list once to count it.
-- Worst-case: O(n) because the loop over all list elements is the dominant cost.
-- Average-case: O(n) for a single pass through the list with dictionary lookups that are O(1) on average.
-- Space complexity: O(k), where k is the number of distinct values in the list.
-- Why this approach? A dictionary stores each unique number and its count, so each number is processed once and updates are constant-time on average.
-- Could it be optimized? For a general list, this is already optimal in the comparison model because each value must be read at least once.
-- Trade-offs: This approach uses extra memory to store counts, but it avoids a nested loop and keeps the implementation simple and fast for large inputs.
+Original vs. Refactored Comparison for problem 1:
+- Original version: two explicit passes (count values, then scan counts). Time: O(n + k), Space: O(k).
+- Refactored version: one counting pass + max lookup over the hash map. Time: O(n + k), Space: O(k).
+- Performance: Both have the same asymptotic complexity, but Counter reduces manual dictionary operations and is more efficient in Python because the counting logic is handled in optimized C-backed code paths.
+- Space usage: No meaningful asymptotic change; still O(k) for distinct values. The trade-off is that the hash map is kept in memory to avoid repeated scans.
+- Could it be optimized further? Only by using different data structures or constraints (for example, if values were already sorted, a linear scan could work, but that changes the input assumptions).
+- Trade-off: This version is cleaner and slightly more efficient in practice, while still using extra memory for the frequency map instead of a nested-loop approach.
 """
 
 
