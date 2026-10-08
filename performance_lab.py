@@ -7,17 +7,30 @@
 # Output: 3
 
 def most_frequent(numbers):
-    # Your code here
-    pass
+    if not numbers:
+        return None
+
+    counts = {}
+    for number in numbers:
+        counts[number] = counts.get(number, 0) + 1
+
+    best_value = None
+    best_count = -1
+    for value, count in counts.items():
+        if count > best_count:
+            best_value = value
+            best_count = count
+
+    return best_value
 
 """
 Time and Space Analysis for problem 1:
-- Best-case:
-- Worst-case:
-- Average-case:
-- Space complexity:
-- Why this approach?
-- Could it be optimized?
+- Best-case: O(n) because we still need to examine every value in the list once to count it.
+- Worst-case: O(n) because the loop over all list elements is the dominant cost.
+- Average-case: O(n) for a single pass through the list with dictionary lookups that are O(1) on average.
+- Space complexity: O(k), where k is the number of distinct values in the list.
+- Why this approach? A dictionary stores each unique number and its count, so each number is processed once and updates are constant-time on average.
+- Could it be optimized? For a general list, this is already optimal in the comparison model because each value must be read at least once.
 """
 
 
@@ -29,17 +42,24 @@ Time and Space Analysis for problem 1:
 # Output: [4, 5, 6, 7]
 
 def remove_duplicates(nums):
-    # Your code here
-    pass
+    seen = set()
+    unique_items = []
+
+    for value in nums:
+        if value not in seen:
+            seen.add(value)
+            unique_items.append(value)
+
+    return unique_items
 
 """
 Time and Space Analysis for problem 2:
-- Best-case:
-- Worst-case:
-- Average-case:
-- Space complexity:
-- Why this approach?
-- Could it be optimized?
+- Best-case: O(n) because we still scan the whole list to determine whether each value is new.
+- Worst-case: O(n) because each element is checked once and possibly inserted into the seen set.
+- Average-case: O(n) as set membership and addition are O(1) on average.
+- Space complexity: O(k), where k is the number of distinct values kept in the result and the set.
+- Why this approach? The set allows O(1)-average membership checks, while the output list preserves the original encounter order.
+- Could it be optimized? Not significantly for a single pass; we must keep some memory of previously seen values to preserve uniqueness without reordering.
 """
 
 
@@ -52,17 +72,26 @@ Time and Space Analysis for problem 2:
 # Output: [(1, 4), (2, 3)]
 
 def find_pairs(nums, target):
-    # Your code here
-    pass
+    seen = set()
+    pairs = set()
+
+    for value in nums:
+        complement = target - value
+        if complement in seen:
+            pair = tuple(sorted((value, complement)))
+            pairs.add(pair)
+        seen.add(value)
+
+    return sorted(pairs)
 
 """
 Time and Space Analysis for problem 3:
-- Best-case:
-- Worst-case:
-- Average-case:
-- Space complexity:
-- Why this approach?
-- Could it be optimized?
+- Best-case: O(n) because we can finish the scan if the target is not found only after checking each value once.
+- Worst-case: O(n) because each element is processed once and set membership is O(1) on average.
+- Average-case: O(n) with hashing for the seen set.
+- Space complexity: O(n) in the worst case, because the set of seen values can grow to include all elements and the result set stores up to O(n) unique pairs.
+- Why this approach? A hash set allows efficient lookup of complements, turning the pair search into a linear pass rather than a nested loop.
+- Could it be optimized? A two-pointer solution is O(n log n) after sorting, but the hash-based method is usually faster for unsorted data and preserves the unique-pair requirement.
 """
 
 
@@ -74,17 +103,36 @@ Time and Space Analysis for problem 3:
 # Example:
 # add_n_items(6) → should print when resizing happens.
 
-def add_n_items(n):
-    # Your code here
-    pass
+def add_n_items(n, initial_capacity=4):
+    if n < 0:
+        raise ValueError("n must be non-negative")
+    if initial_capacity <= 0:
+        raise ValueError("initial_capacity must be positive")
+
+    values = []
+    capacity = initial_capacity
+
+    print(f"Initial capacity: {capacity}")
+
+    for item in range(1, n + 1):
+        if len(values) == capacity:
+            new_capacity = capacity * 2
+            print(f"Resizing: {capacity} -> {new_capacity}")
+            values = values.copy()
+            capacity = new_capacity
+
+        values.append(item)
+        print(f"Added {item}; current size: {len(values)}; capacity: {capacity}")
+
+    return values
 
 """
 Time and Space Analysis for problem 4:
-- When do resizes happen?
-- What is the worst-case for a single append?
-- What is the amortized time per append overall?
-- Space complexity:
-- Why does doubling reduce the cost overall?
+- When do resizes happen? A resize occurs whenever the current number of stored elements reaches the current capacity, so the list doubles at sizes 4, 8, 16, 32, ... for an initial capacity of 4.
+- What is the worst-case for a single append? O(capacity) during a resize, because every existing element must be copied into the new array.
+- What is the amortized time per append overall? O(1) amortized, because expensive resize operations happen infrequently while many appends are cheap.
+- Space complexity: O(n) for the final list, with temporary extra space during a resize of up to O(capacity) while the new array is built.
+- Why does doubling reduce the cost overall? Each resize copies a large array, but each element participates in only a constant number of re-copying events as capacity doubles repeatedly, so total copying cost stays proportional to the total number of inserts.
 """
 
 
@@ -98,15 +146,76 @@ Time and Space Analysis for problem 4:
 # Because: [1, 1+2, 1+2+3, 1+2+3+4]
 
 def running_total(nums):
-    # Your code here
-    pass
+    totals = []
+    running_sum = 0
+
+    for value in nums:
+        running_sum += value
+        totals.append(running_sum)
+
+    return totals
 
 """
 Time and Space Analysis for problem 5:
-- Best-case:
-- Worst-case:
-- Average-case:
-- Space complexity:
-- Why this approach?
-- Could it be optimized?
+- Best-case: O(n) because the function must process each item at least once to build the cumulative sums.
+- Worst-case: O(n) because the loop runs across the full list.
+- Average-case: O(n) for the same reason.
+- Space complexity: O(n) to store the result list of running totals.
+- Why this approach? We maintain a single running sum and append to a new list, which keeps the algorithm simple and avoids re-summing earlier elements.
+- Could it be optimized? Not in asymptotic terms for producing all cumulative totals; every output value must be calculated once.
 """
+
+
+def run_tests():
+    # Problem 1 tests
+    assert most_frequent([]) is None
+    assert most_frequent([42]) == 42
+    assert most_frequent([1, 3, 2, 3, 4, 1, 3]) == 3
+    assert most_frequent([5, 5, 1, 1]) in {5, 1}
+    assert most_frequent([2, 2, 3, 3, 3]) == 3
+
+    # Problem 2 tests
+    assert remove_duplicates([]) == []
+    assert remove_duplicates([4, 5, 4, 6, 5, 7]) == [4, 5, 6, 7]
+    assert remove_duplicates([1, 1, 1]) == [1]
+    assert remove_duplicates([8, 2, 8, 3, 2, 4]) == [8, 2, 3, 4]
+    assert remove_duplicates([7]) == [7]
+
+    # Problem 3 tests
+    assert find_pairs([], 5) == []
+    assert find_pairs([1, 2, 3, 4], 5) == [(1, 4), (2, 3)]
+    assert find_pairs([10, 20, 30, 40], 50) == [(10, 40), (20, 30)]
+    assert find_pairs([1, 2, 3], 10) == []
+    assert find_pairs([5, 6, 7, 8, 9], 13) == [(5, 8), (6, 7)]
+
+    # Problem 4 tests
+    import io
+    from contextlib import redirect_stdout
+
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        result = add_n_items(6, initial_capacity=4)
+    output = buffer.getvalue()
+    assert result == [1, 2, 3, 4, 5, 6]
+    assert "Initial capacity: 4" in output
+    assert "Resizing: 4 -> 8" in output
+    assert "Added 6" in output
+
+    empty_buffer = io.StringIO()
+    with redirect_stdout(empty_buffer):
+        empty_result = add_n_items(0, initial_capacity=4)
+    assert empty_result == []
+    assert "Initial capacity: 4" in empty_buffer.getvalue()
+
+    # Problem 5 tests
+    assert running_total([]) == []
+    assert running_total([1, 2, 3, 4]) == [1, 3, 6, 10]
+    assert running_total([5, -2, 3]) == [5, 3, 6]
+    assert running_total([0, 0, 0]) == [0, 0, 0]
+    assert running_total([-1, -2, 3, -4]) == [-1, -3, 0, -4]
+
+    print("All performance_lab tests passed.")
+
+
+if __name__ == "__main__":
+    run_tests()
