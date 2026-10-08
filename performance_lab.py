@@ -31,6 +31,7 @@ Time and Space Analysis for problem 1:
 - Space complexity: O(k), where k is the number of distinct values in the list.
 - Why this approach? A dictionary stores each unique number and its count, so each number is processed once and updates are constant-time on average.
 - Could it be optimized? For a general list, this is already optimal in the comparison model because each value must be read at least once.
+- Trade-offs: This approach uses extra memory to store counts, but it avoids a nested loop and keeps the implementation simple and fast for large inputs.
 """
 
 
@@ -60,6 +61,7 @@ Time and Space Analysis for problem 2:
 - Space complexity: O(k), where k is the number of distinct values kept in the result and the set.
 - Why this approach? The set allows O(1)-average membership checks, while the output list preserves the original encounter order.
 - Could it be optimized? Not significantly for a single pass; we must keep some memory of previously seen values to preserve uniqueness without reordering.
+- Trade-offs: We use extra memory for the set, which makes the algorithm much faster than repeatedly scanning the output list, but it increases space usage compared with an in-place approach.
 """
 
 
@@ -92,6 +94,7 @@ Time and Space Analysis for problem 3:
 - Space complexity: O(n) in the worst case, because the set of seen values can grow to include all elements and the result set stores up to O(n) unique pairs.
 - Why this approach? A hash set allows efficient lookup of complements, turning the pair search into a linear pass rather than a nested loop.
 - Could it be optimized? A two-pointer solution is O(n log n) after sorting, but the hash-based method is usually faster for unsorted data and preserves the unique-pair requirement.
+- Trade-offs: The hash-set method is fast and simple, but it uses extra memory and may need conversion to sorted tuples/pairs to keep results deterministic.
 """
 
 
@@ -133,6 +136,7 @@ Time and Space Analysis for problem 4:
 - What is the amortized time per append overall? O(1) amortized, because expensive resize operations happen infrequently while many appends are cheap.
 - Space complexity: O(n) for the final list, with temporary extra space during a resize of up to O(capacity) while the new array is built.
 - Why does doubling reduce the cost overall? Each resize copies a large array, but each element participates in only a constant number of re-copying events as capacity doubles repeatedly, so total copying cost stays proportional to the total number of inserts.
+- Trade-offs: Doubling reduces the number of resize operations but temporarily uses extra memory during growth; this is the classic trade-off between occasional large copy costs and many cheap append operations.
 """
 
 
@@ -163,6 +167,7 @@ Time and Space Analysis for problem 5:
 - Space complexity: O(n) to store the result list of running totals.
 - Why this approach? We maintain a single running sum and append to a new list, which keeps the algorithm simple and avoids re-summing earlier elements.
 - Could it be optimized? Not in asymptotic terms for producing all cumulative totals; every output value must be calculated once.
+- Trade-offs: This method is efficient and easy to read, but it creates a second array for the results, which costs memory in exchange for avoiding redundant recomputation.
 """
 
 
